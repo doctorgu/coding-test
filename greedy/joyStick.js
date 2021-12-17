@@ -82,7 +82,7 @@ function getFromTo(nums) {
     const info =
       countToR <= countToL
         ? { count: countToR, from: 0, to: last }
-        : { count: countToL, from: last, to: nums.length - 1 }
+        : { count: countToL, from: first, to: nums.length - 1 }
     // console.log(nums, first, last, countToR, countToL, info)
     return info
   }
@@ -103,27 +103,27 @@ function solution(name) {
 
   const numFirst = nums.shift()
   total += numFirst
-  console.log(1, total)
+  // console.log(1, total)
 
   const { count, from, to, from2, to2 } = getFromTo(nums)
   total += count
-  console.log(2, total)
+  // console.log(2, total)
 
   if (from !== undefined) {
     for (let i = from; i <= to; i++) {
       total += nums[i]
     }
   }
-  console.log(3, total)
+  // console.log(3, total)
 
   if (from2 !== undefined) {
     for (let i = from2; i <= to2; i++) {
       total += nums[i]
     }
   }
-  console.log(4, total)
+  // console.log(4, total)
 
-  console.log(total)
+  // console.log(total)
   return total
 }
 
@@ -143,6 +143,7 @@ function test() {
   runTest(solution, 'ABAA', 2)
   runTest(solution, 'AB', 2)
   runTest(solution, 'AAB', 2)
+  runTest(solution, 'AABB', 4)
   runTest(solution, 'ABABA', 5)
   runTest(solution, 'ABAABABA', 9)
   runTest(solution, 'AAABA', 3)
@@ -151,8 +152,6 @@ function test() {
   runTest(solution, 'ABAAAAAAAAABB', 7)
   // First to left then to right
   runTest(solution, 'ABBAAAAAAAAAB', 7)
-  // ETC
-  runTest(solution, 'BAAABBBBBBB', 15)
 }
 
 module.exports = {
