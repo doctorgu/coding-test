@@ -1,0 +1,9 @@
+{
+  "name": "programmers",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "config-yml": "^0.10.3",
+    "debug": "~2.6.9"
+  }
+}
