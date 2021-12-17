@@ -1,5 +1,4 @@
 'use strict'
-
 const { runTest } = require('../common/runTest')
 
 function getLargestABlock(nums) {
