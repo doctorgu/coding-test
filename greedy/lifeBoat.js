@@ -26,6 +26,10 @@ function test() {
   runTest(solution, [70, 50, 80, 50], 100, 3)
   runTest(solution, [70, 80, 50], 100, 3)
 
+  runTest(solution, [70], 70, 1)
+  runTest(solution, [40, 40], 80, 1)
+  runTest(solution, [40, 41], 80, 2)
+  runTest(solution, [40, 50, 50, 60], 100, 2)
   runTest(solution, [40, 40, 50, 60], 100, 2)
 }
 
