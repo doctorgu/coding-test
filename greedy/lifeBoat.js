@@ -1,42 +1,62 @@
 'use strict'
 const { runTest } = require('../common/runTest')
 
+// function getByTwoPointer(people, limit) {
+//   people.sort((a, b) => a - b)
+
+//   let count = 0
+
+//   let lIdx = -1
+//   let rIdx = people.length
+//   let toRight = false
+//   let sum = 0
+//   while (rIdx - lIdx > 1) {
+//     if (toRight) {
+//       lIdx += 1
+//       sum += people[lIdx]
+//     } else {
+//       rIdx -= 1
+//       sum += people[rIdx]
+//     }
+
+//     if (sum === limit) {
+//       count += 1
+//       sum = 0
+//     } else if (sum > limit) {
+//       if (!toRight) {
+//         sum -= people[rIdx]
+//         rIdx += 1
+//         toRight = true
+//       } else {
+//         count += 1
+//         sum = 0
+//         lIdx -= 1
+//         toRight = false
+//       }
+//     }
+//   }
+
+//   return count + (sum > 0)
+// }
+
 function getByTwoPointer(people, limit) {
   people.sort((a, b) => a - b)
 
   let count = 0
 
-  let lIdx = -1
-  let rIdx = people.length
-  let toRight = false
-  let sum = 0
-  while (rIdx - lIdx > 1) {
-    if (toRight) {
+  let lIdx = 0
+  let rIdx = people.length - 1
+  while (rIdx >= lIdx) {
+    const sum = people[lIdx] + people[rIdx]
+    if (rIdx !== lIdx && sum < limit) {
       lIdx += 1
-      sum += people[lIdx]
-    } else {
-      rIdx -= 1
-      sum += people[rIdx]
     }
+    rIdx -= 1
 
-    if (sum === limit) {
-      count += 1
-      sum = 0
-    } else if (sum > limit) {
-      if (!toRight) {
-        sum -= people[rIdx]
-        rIdx += 1
-        toRight = true
-      } else {
-        count += 1
-        sum = 0
-        lIdx -= 1
-        toRight = false
-      }
-    }
+    count += 1
   }
 
-  return count + (sum > 0)
+  return count
 }
 
 function solution(people, limit) {
