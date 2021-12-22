@@ -1,25 +1,47 @@
 'use strict'
 const { runTest } = require('../common/runTest')
 
-function addCount(people, limit, info = { sum: 0, count: 0 }) {
-  if (people.length === 0) return
+function getByTwoPointer(people, limit) {
+  people.sort((a, b) => a - b)
 
-  const firstIdx = people.findIndex((p) => p === limit)
-  if (firstIdx) {
-    people.splice(firstIdx, 1)
-    info.sum = 0
-    info.count += 1
+  let count = 0
 
-    addCount(people, limit, info)
-    return
+  let lIdx = -1
+  let rIdx = people.length
+  let toRight = false
+  let sum = 0
+  while (rIdx - lIdx > 1) {
+    if (toRight) {
+      lIdx += 1
+      sum += people[lIdx]
+    } else {
+      rIdx -= 1
+      sum += people[rIdx]
+    }
+
+    if (sum === limit) {
+      count += 1
+      sum = 0
+    } else if (sum > limit) {
+      if (!toRight) {
+        sum -= people[rIdx]
+        rIdx += 1
+        toRight = true
+      } else {
+        count += 1
+        sum = 0
+        lIdx -= 1
+        toRight = false
+      }
+    }
   }
 
-  people.sort((a, b) => b - a)
+  return count + (sum > 0)
 }
 
 function solution(people, limit) {
-  var answer = 0
-  return answer
+  const count = getByTwoPointer(people, limit)
+  return count
 }
 
 function test() {
@@ -36,5 +58,23 @@ function test() {
 module.exports = {
   test,
 }
+
+/*
+테스트 1 〉	실패 (4.47ms, 32.1MB)
+테스트 2 〉	통과 (3.97ms, 33MB)
+테스트 3 〉	실패 (1.50ms, 30.4MB)
+테스트 4 〉	실패 (1.43ms, 30.3MB)
+테스트 5 〉	실패 (0.85ms, 30.3MB)
+테스트 6 〉	실패 (0.56ms, 30.3MB)
+테스트 7 〉	실패 (0.80ms, 30MB)
+테스트 8 〉	통과 (0.13ms, 30.2MB)
+테스트 9 〉	실패 (0.32ms, 30.3MB)
+테스트 10 〉	실패 (2.68ms, 30.5MB)
+테스트 11 〉	실패 (2.18ms, 30.2MB)
+테스트 12 〉	실패 (1.67ms, 30.3MB)
+테스트 13 〉	실패 (1.42ms, 30.3MB)
+테스트 14 〉	통과 (4.05ms, 33.1MB)
+테스트 15 〉	통과 (0.25ms, 30.2MB)
+*/
 
 // node -e "require('./greedy/lifeBoat.js').test()"
