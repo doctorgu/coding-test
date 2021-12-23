@@ -48,7 +48,7 @@ function getByTwoPointer(people, limit) {
   let rIdx = people.length - 1
   while (rIdx >= lIdx) {
     const sum = people[lIdx] + people[rIdx]
-    if (rIdx !== lIdx && sum < limit) {
+    if (rIdx !== lIdx && sum <= limit) {
       lIdx += 1
     }
     rIdx -= 1
