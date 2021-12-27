@@ -11,11 +11,16 @@ function getAllPossibleRoutes(list) {
   return ret
 }
 
-function getCost(costs, fromP, toP, costsFound = { temp: 0, final: 0 }) {
-  const froms = costs.filter(([fromC]) => fromC === fromP)
+function getCost(
+  costs,
+  fromP,
+  toP,
+  costsFound = { temp: 0, final: Number.MAX_SAFE_INTEGER }
+) {
+  const costsFrom = costs.filter(([fromC]) => fromC === fromP)
 
-  for (let i = 0; i < froms.length; i++) {
-    const [, toC, cost] = froms[i]
+  for (let i = 0; i < costsFrom.length; i++) {
+    const [, toC, cost] = costsFrom[i]
     costsFound.temp += cost
     if (toC === toP) {
       costsFound.final = Math.min(costsFound.final, costsFound.temp)
