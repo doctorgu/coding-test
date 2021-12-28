@@ -21,12 +21,16 @@ function getCost(
 
   for (let i = 0; i < costsFrom.length; i++) {
     const [, toC, cost] = costsFrom[i]
+
     costsFound.temp += cost
+
     if (toC === toP) {
       costsFound.final = Math.min(costsFound.final, costsFound.temp)
     } else {
       getCost(costs, toC, toP, costsFound)
     }
+
+    costsFound.temp -= cost
   }
 
   return costsFound.final
