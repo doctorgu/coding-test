@@ -11,26 +11,70 @@ function getAllPossibleRoutes(list) {
   return ret
 }
 
+// function getCost(
+//   costs,
+//   fromP,
+//   toP,
+//   costsFound = { temp: 0, final: Number.MAX_SAFE_INTEGER }
+// ) {
+//   const costsFrom = costs.filter(([fromC]) => fromC === fromP)
+
+//   for (let i = 0; i < costsFrom.length; i++) {
+//     const [, toC, cost] = costsFrom[i]
+
+//     costsFound.temp += cost
+
+//     if (toC === toP) {
+//       costsFound.final = Math.min(costsFound.final, costsFound.temp)
+//     } else {
+//       getCost(costs, toC, toP, costsFound)
+//     }
+
+//     costsFound.temp -= cost
+//   }
+
+//   return costsFound.final
+// }
+
 function getCost(
   costs,
   fromP,
   toP,
-  costsFound = { temp: 0, final: Number.MAX_SAFE_INTEGER }
+  costsFound = { sum: 0, usedRoutes: [], final: Number.MAX_SAFE_INTEGER }
 ) {
-  const costsFrom = costs.filter(([fromC]) => fromC === fromP)
+  const costTos = costs.filter(
+    ([fromC, toC]) => fromC === fromP || toC === fromP
+  )
+  console.log('fromP:', fromP, 'toP:', toP, 'costTos:', costTos)
 
-  for (let i = 0; i < costsFrom.length; i++) {
-    const [, toC, cost] = costsFrom[i]
+  for (let i = 0; i < costTos.length; i += 1) {
+    const [fromC, toC, cost] = costTos[i]
+    console.log('fromC:', fromC, ' toC:', toC)
 
-    costsFound.temp += cost
+    const fromFinal = fromC === fromP ? fromC : toC
+    const toFinal = toC === fromP ? fromC : toC
+    const curRoute = [fromFinal, toFinal].sort((a, b) => a - b)
+    const used = costsFound.usedRoutes.some(
+      ([from, to]) => from === curRoute[0] && to === curRoute[1]
+    )
+    console.log('used', used, curRoute)
+    if (used) continue
 
-    if (toC === toP) {
-      costsFound.final = Math.min(costsFound.final, costsFound.temp)
+    costsFound.usedRoutes.push(curRoute)
+    costsFound.sum += cost
+
+    if (toFinal === toP) {
+      costsFound.final = Math.min(costsFound.final, costsFound.sum)
     } else {
       getCost(costs, toC, toP, costsFound)
     }
 
-    costsFound.temp -= cost
+    const index = costsFound.usedRoutes.findIndex(
+      ([from, to]) => from === curRoute[0] && to === curRoute[1]
+    )
+    costsFound.usedRoutes.splice(index, 1)
+
+    costsFound.sum -= cost
   }
 
   return costsFound.final
@@ -39,7 +83,7 @@ function getCost(
 function getCheapest(possibles, costs) {
   possibles.forEach(([fromP, toP]) => {
     const cost = getCost(costs, fromP, toP)
-    console.log(fromP, toP, cost)
+    console.log('---getCost', fromP, toP, cost)
   })
 }
 
