@@ -53,6 +53,7 @@ function getCost(
 
     const fromFinal = fromC === fromP ? fromC : toC
     const toFinal = toC === fromP ? fromC : toC
+    console.log('fromFinal:', fromFinal, ' toFinal:', toFinal)
     const curRoute = [fromFinal, toFinal].sort((a, b) => a - b)
     const used = costsFound.usedRoutes.some(
       ([from, to]) => from === curRoute[0] && to === curRoute[1]
@@ -66,7 +67,7 @@ function getCost(
     if (toFinal === toP) {
       costsFound.final = Math.min(costsFound.final, costsFound.sum)
     } else {
-      getCost(costs, toC, toP, costsFound)
+      getCost(costs, toFinal, toP, costsFound)
     }
 
     const index = costsFound.usedRoutes.findIndex(
