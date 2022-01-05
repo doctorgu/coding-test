@@ -1,7 +1,7 @@
 'use strict'
 const { runTest } = require('../common/runTest')
 
-function getAllPossibleRoutes(list) {
+function getPossibleRoutes(list) {
   const ret = []
   for (let i = 0; i < list.length; i++) {
     for (let j = i + 1; j < list.length; j++) {
@@ -36,13 +36,64 @@ function getAllPossibleRoutes(list) {
 //   return costsFound.final
 // }
 
-function getCheapestRoutes(
+// function getCheapestRoutes(
+//   costs,
+//   fromP,
+//   toP,
+//   costsFound = {
+//     sum: 0,
+//     final: Number.MAX_SAFE_INTEGER,
+//     usedRoutesAndCost: [],
+//     routesFinal: [],
+//   }
+// ) {
+//   const costTos = costs.filter(
+//     ([fromC, toC]) => fromC === fromP || toC === fromP
+//   )
+//   // console.log('fromP:', fromP, 'toP:', toP, 'costTos:', costTos)
+
+//   for (let i = 0; i < costTos.length; i += 1) {
+//     const [fromC, toC, cost] = costTos[i]
+//     // console.log('fromC:', fromC, ' toC:', toC)
+
+//     const fromFinal = fromC === fromP ? fromC : toC
+//     const toFinal = toC === fromP ? fromC : toC
+//     // console.log('fromFinal:', fromFinal, ' toFinal:', toFinal)
+//     const curRoute = [fromFinal, toFinal].sort((a, b) => a - b)
+//     const used = costsFound.usedRoutesAndCost.some(
+//       ([from, to]) => from === curRoute[0] && to === curRoute[1]
+//     )
+//     // console.log('used', used, curRoute)
+//     if (used) continue
+
+//     costsFound.usedRoutesAndCost.push([...curRoute, cost])
+//     costsFound.sum += cost
+
+//     if (toFinal === toP) {
+//       if (costsFound.sum < costsFound.final) {
+//         costsFound.final = costsFound.sum
+//         costsFound.routesFinal = [...costsFound.usedRoutesAndCost]
+//       }
+//     } else {
+//       getCheapestRoutes(costs, toFinal, toP, costsFound)
+//     }
+
+//     const index = costsFound.usedRoutesAndCost.findIndex(
+//       ([from, to]) => from === curRoute[0] && to === curRoute[1]
+//     )
+//     costsFound.usedRoutesAndCost.splice(index, 1)
+
+//     costsFound.sum -= cost
+//   }
+
+//   return costsFound.routesFinal
+// }
+
+function getRoutes(
   costs,
   fromP,
   toP,
   costsFound = {
-    sum: 0,
-    final: Number.MAX_SAFE_INTEGER,
     usedRoutesAndCost: [],
     routesFinal: [],
   }
@@ -67,23 +118,17 @@ function getCheapestRoutes(
     if (used) continue
 
     costsFound.usedRoutesAndCost.push([...curRoute, cost])
-    costsFound.sum += cost
 
     if (toFinal === toP) {
-      if (costsFound.sum < costsFound.final) {
-        costsFound.final = costsFound.sum
-        costsFound.routesFinal = [...costsFound.usedRoutesAndCost]
-      }
+      costsFound.routesFinal.push([...costsFound.usedRoutesAndCost])
     } else {
-      getCheapestRoutes(costs, toFinal, toP, costsFound)
+      getRoutes(costs, toFinal, toP, costsFound)
     }
 
     const index = costsFound.usedRoutesAndCost.findIndex(
       ([from, to]) => from === curRoute[0] && to === curRoute[1]
     )
     costsFound.usedRoutesAndCost.splice(index, 1)
-
-    costsFound.sum -= cost
   }
 
   return costsFound.routesFinal
@@ -93,15 +138,16 @@ function getCheapest(possibles, costs) {
   const routesUnique = []
   let sum = 0
   possibles.forEach(([fromP, toP]) => {
-    const routes = getCheapestRoutes(costs, fromP, toP)
-    // console.log('routes', routes)
-    for (let i = 0; i < routes.length; i++) {
-      const [from, to, cost] = routes[i]
-      if (!routesUnique.some(([fromU, toU]) => fromU === from && toU === to)) {
-        routesUnique.push(routes[i])
-        sum += cost
-      }
-    }
+    const routes = getRoutes(costs, fromP, toP)
+    console.log(fromP, toP, routes)
+    // // console.log('routes', routes)
+    // for (let i = 0; i < routes.length; i++) {
+    //   const [from, to, cost] = routes[i]
+    //   if (!routesUnique.some(([fromU, toU]) => fromU === from && toU === to)) {
+    //     routesUnique.push(routes[i])
+    //     sum += cost
+    //   }
+    // }
   })
 
   // console.log(routesUnique)
@@ -112,9 +158,9 @@ function solution(n, costs) {
   costs.sort((a, b) => (a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]))
 
   const list = [...Array(n).keys()]
-  const possibles = getAllPossibleRoutes(list)
+  const possibles = getPossibleRoutes(list)
   const price = getCheapest(possibles, costs)
-  return price
+  // return price
 }
 
 function test() {
