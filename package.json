@@ -1,9 +1,14 @@
 {
-  "name": "programmers",
-  "version": "0.0.0",
+  "name": "coding-test",
+  "description": "Coding test",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "doctorgu",
+  "license": "MIT",
   "private": true,
-  "dependencies": {
-    "config-yml": "^0.10.3",
-    "debug": "~2.6.9"
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts",
+    "logCompared": "tsc && node -e \"require('./dist/run/logCompared').logCompared()\""
   }
 }

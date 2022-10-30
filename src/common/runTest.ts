@@ -1,6 +1,4 @@
-'use strict';
-
-function runTest(solution, ...args) {
+function runTest(solution: Function, ...args: any) {
   const resultShould = args.pop();
   console.log(...args, '->', resultShould);
 
@@ -11,6 +9,4 @@ function runTest(solution, ...args) {
   console.log(remark);
 }
 
-module.exports = {
-  runTest,
-};
+export default runTest;
