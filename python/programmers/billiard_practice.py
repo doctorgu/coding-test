@@ -2,44 +2,44 @@ from math import sqrt
 def solution_wrong(width, height, start_x, start_y, balls):
     def get_corners(x1, y1, x2, y2):
         dic = {}
-        down = False
+        direction = ''
         if x1 <= x2:
             if y1 >= y2:
-                down = True
+                direction = 'rb'
                 dic['lt'] = (x1, y1)
                 dic['rb'] = (x2, y2)
                 dic['rt'] = (x2, y1)
                 dic['lb'] = (x1, y2)
             else:
-                down = False
+                direction = 'rt'
                 dic['lb'] = (x1, y1)
                 dic['rt'] = (x2, y2)
                 dic['rb'] = (x2, y1)
                 dic['lt'] = (x1, y2)
         else:
             if y1 >= y2:
-                down = False
+                direction = 'lb'
                 dic['rt'] = (x1, y1)
                 dic['lb'] = (x2, y2)
                 dic['lt'] = (x2, y1)
                 dic['rb'] = (x1, y2)
             else:
-                down = True
+                direction = 'lt'
                 dic['rb'] = (x1, y1)
                 dic['lt'] = (x2, y2)
                 dic['lb'] = (x2, y1)
                 dic['rt'] = (x1, y2)
         
-        return (dic, down)
+        return (dic, direction)
         
-    def get_ws_hs(corners, down):
+    def get_ws_hs(corners, direction):
         x1, y1 = corners['lt']
         x2, y2 = corners['rt']
         x3, y3 = corners['rb']
         x4, y4 = corners['lb']
         
         hs, ws = [0,0,0,0], [0,0,0,0]
-        if down:
+        if direction == 'rb' or direction == 'lt':
             ws[0] = y2 - y3
             hs[0] = x1 * 2 + x2 - x1
             
@@ -52,7 +52,7 @@ def solution_wrong(width, height, start_x, start_y, balls):
             ws[3] = y1 - y4
             hs[3] = (width - x3) * 2 + x3 - x4
         else:
-            ws[0] = x1 - x4
+            ws[0] = y1 - y4
             hs[0] = (width - x2) * 2 + x2 - x1
             
             ws[1] = x2 - x1
@@ -63,13 +63,42 @@ def solution_wrong(width, height, start_x, start_y, balls):
             
             ws[3] = y2 - y3
             hs[3] = x4 * 2 + x3 - x4
-            
+
+        if direction == 'rb':
+            if y1 == y4:
+                ws[3] = 0
+                hs[3] = 0
+            if x1 == x2:
+                ws[1] = 0
+                hs[1] = 0
+        elif direction == 'rt':
+            if y1 == y4:
+                ws[1] = 0
+                hs[1] = 0
+            if x3 == x4:
+                ws[2] = 0
+                hs[2] = 0
+        elif direction == 'lb':
+            if y2 == y3:
+                ws[3] = 0
+                hs[3] = 0
+            if x1 == x2:
+                ws[1] = 0
+                hs[1] = 0
+        elif direction == 'lt':
+            if y2 == y3:
+                ws[1] = 0
+                hs[1] = 0
+            if x3 == x4:
+                ws[2] = 0
+                hs[2] = 0
+
         return (ws, hs)
         
     def get_min_len(ws, hs):
         min_ = 999_999_999
         for i in range(4):
-            #if ws[i] == 0 or hs[i] == 0: continue
+            if ws[i] == 0 and hs[i] == 0: continue
             cur = ws[i] ** 2 + hs[i] ** 2
             if cur < min_:
                 min_ = cur
@@ -78,33 +107,9 @@ def solution_wrong(width, height, start_x, start_y, balls):
     def get_result(ball):
         dest_x, dest_y = ball
         
-        """
-        start_w, start_h = 0, 0
-        dest_w, dest_h = 0, 0
-        if dest_x <= width // 2:
-            start_w, dest_w = start_x, dest_x
-            if dest_y >= height // 2:
-                start_h, dest_h = height - start_y, height - dest_y
-            else:
-                start_h, dest_h = start_y, dest_y
-        else:
-            start_w, dest_w = width - start_x, width - dest_x
-            if dest_y >= height // 2:
-                start_h, dest_h = height - start_y, height - dest_y
-            else:
-                start_h, dest_h = start_y, dest_y
-                
-        if start_w == start_h and dest_w == dest_h\
-        and start_w < dest_w:
-            ret = pow(
-                    sqrt(pow(start_w, 2) + pow(start_h, 2))
-                    + sqrt(pow(dest_w, 2) + pow(dest_h, 2))
-                    , 2)
-            return ret
-        """
-        corners, down = get_corners(start_x, start_y, dest_x, dest_y)
-        #print(f'corners:{corners}, down:{down}')
-        ws, hs = get_ws_hs(corners, down)
+        corners, direction = get_corners(start_x, start_y, dest_x, dest_y)
+        #print(f'corners:{corners}, direction:{direction}')
+        ws, hs = get_ws_hs(corners, direction)
         #print(f'ws:{ws}, hs:{hs}')
         min_len = get_min_len(ws, hs)
         #print(f'min_len:{min_len}')
@@ -161,4 +166,5 @@ def test():
                 return
 
 test()
-#ret_wrong = solution_wrong(10, 10, 1, 2, [[2, 2]])
+#ret_wrong = solution_wrong(10, 10, 2, 2, [[1, 2]])
+#print(ret_wrong)
